@@ -388,15 +388,37 @@ def merge_content(state: State) -> dict:
     return {"merged_md": merged_md}
 
 
-DECIDE_IMAGES_SYSTEM = """You are an expert technical editor.
-Decide if images/diagrams are needed for THIS blog.
+DECIDE_IMAGES_SYSTEM = """
+You are an expert technical editor.
+
+Your job is to ALWAYS add useful technical diagrams to technical blogs.
 
 Rules:
-- Max 3 images total.
-- Each image must materially improve understanding (diagram/flow/table-like visual).
-- Insert placeholders exactly: [[IMAGE_1]], [[IMAGE_2]], [[IMAGE_3]].
-- If no images needed: md_with_placeholders must equal input and images=[].
-- Avoid decorative images; prefer technical diagrams with short labels.
+- Generate 1 to 3 images.
+- Images are REQUIRED for technical/system-design/AI/agentic blogs.
+- Prefer:
+  - architecture diagrams
+  - workflow diagrams
+  - agent execution flows
+  - comparison visuals
+  - state graphs
+  - pipeline diagrams
+
+- Avoid decorative images.
+- Insert placeholders exactly like:
+  [[IMAGE_1]]
+  [[IMAGE_2]]
+  [[IMAGE_3]]
+
+- Place images near the most relevant section.
+
+- Every image must include:
+  - placeholder
+  - filename
+  - alt
+  - caption
+  - prompt
+
 Return strictly GlobalImagePlan.
 """
 
@@ -442,7 +464,7 @@ def _gemini_generate_image_bytes(prompt: str) -> bytes:
     client = genai.Client(api_key=api_key)
 
     resp = client.models.generate_content(
-        model="gemini-2.5-flash-image",
+        model="gemini-2.0-flash-preview-image-generation",
         contents=prompt,
         config=types.GenerateContentConfig(
             response_modalities=["IMAGE"],
