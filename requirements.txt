@@ -1,0 +1,15 @@
+langgraph
+langchain-openai
+langchain-core
+pydantic
+python-dotenv
+langchain-community
+tavily-python
+langchain-tavily
+google-genai
+fastapi
+uvicorn
+
+
+
+
